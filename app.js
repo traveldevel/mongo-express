@@ -17,17 +17,19 @@ let app               = express();
 let notifier          = updateNotifier({ pkg });
 
 let config;
-let defaultPort = 80;
+let defaultPort = 8080;
 let server      = app;
 let sslOptions;
 
 // Notify of any updates
 notifier.notify();
 
-try {
-  // eslint-disable-next-line import/no-unresolved
-  config = utils.deepmerge(require('./config.default'), require('./config'));
-} catch (e) {
+try
+{
+  config = require('./config'));
+} 
+catch (e) 
+{
   if (e.code === 'MODULE_NOT_FOUND') {
     console.log('No custom config.js found, loading config.default.js');
   } else {
@@ -101,8 +103,8 @@ if (!config.site.baseUrl) {
 app.use(config.site.baseUrl, middleware(config));
 app.use(config.site.baseUrl, csrf());
 
-if (config.site.sslEnabled) {
-  defaultPort     = 443;
+if (config.site.sslEnabled && config.site.sslKey.length > 0 && config.site.sslCert.length > 0) {
+  defaultPort = 443;
   sslOptions  = {
     key:  fs.readFileSync(config.site.sslKey),
     cert: fs.readFileSync(config.site.sslCert),
