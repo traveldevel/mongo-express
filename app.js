@@ -26,7 +26,7 @@ notifier.notify();
 
 try
 {
-  config = require('./config'));
+  config = require('./config');
 } 
 catch (e) 
 {
