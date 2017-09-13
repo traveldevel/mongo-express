@@ -4,7 +4,7 @@ declared-services:
     label: mongodb
     plan: v3.0-dev
 applications:
-- name: mongo-express-shared
+- name: iot-hub-mongo-express-shared
   memory: 128M
   disk_quota: 256M
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack
