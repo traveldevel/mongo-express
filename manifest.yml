@@ -1,13 +1,14 @@
 ---
 declared-services:
-  db-mongo:
+  mongo_shared:
     label: mongodb
-    plan: 100
+    plan: v3.0-dev
 applications:
-- name: mongo-express
-  host: mongo-express
+- name: mongo-express-shared
   memory: 128M
+  disk_quota: 256M
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack
   services:
-    - db-mongo
+    - mongo_shared
   env:
     NODE_ENV: cloud-foundry
