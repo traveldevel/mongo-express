@@ -6,21 +6,44 @@ require('dotenv').config();
 
 // Accesing Cloud Foundry variable to get MongoDB info
 if (process.env.VCAP_SERVICES) {
-  var dbLabel = 'mongodb';
-  var env = JSON.parse(process.env.VCAP_SERVICES);
-  if (env[dbLabel]) {
-    mongo = env[dbLabel][0].credentials;
-  }
+  
+    // configs from env vars
+    var appEnv = cfenv.getAppEnv();
+    //console.log(appEnv.getServices());
 
-  if(mongo.connectionString === undefined){
-    mongo.connectionString = mongo.uri;
-  }
+    var mongoServiceName = "iot_hub_mongo_" + landscapeName;
+    var mongoService = appEnv.getService(mongoServiceName);
+    var mongoCredentials = appEnv.getServiceCreds(mongoServiceName);
+    var mongoUrl = mongoCredentials.uri;
+    var mongoClient = require('mongodb').MongoClient;
+
+    console.log(mongoServiceName + " found in VCAP_SERVICES");
+    console.log(mongoService.credentials);
+
+    var mongoDbName = '';
+    var mongoUrl = '';
+
+    if(mongoService !== undefined){
+
+        mongoUrl = mongoService.credentials.uri + "?ssl=false";
+
+        var mongodbUri = require('mongodb-uri');
+        var uriObject = mongodbUri.parse(mongoUrl);
+        mongoDbName = uriObject.database;
+    }
+
+    console.log("Mongo url : ", mongoUrl);
+    console.log("Mongo db : ", mongoDbName);  
+
+    if(mongo.connectionString === undefined){
+      mongo.connectionString = mongoUrl;
+    }
 } else {
-  mongo = {
-    // setting the connection string will only give access to that database
-    // to see more databases you need to set mongodb.admin to true or add databases to the mongodb.auth list
-    connectionString: process.env.ME_CONFIG_MONGODB_SERVER ? '' : process.env.ME_CONFIG_MONGODB_URL,
-  };
+    mongo = {
+      // setting the connection string will only give access to that database
+      // to see more databases you need to set mongodb.admin to true or add databases to the mongodb.auth list
+      connectionString: process.env.ME_CONFIG_MONGODB_SERVER ? '' : process.env.ME_CONFIG_MONGODB_URL,
+    };
 }
 
 var meConfigMongodbServer = process.env.ME_CONFIG_MONGODB_SERVER ? process.env.ME_CONFIG_MONGODB_SERVER.split(',') : false;
@@ -103,8 +126,8 @@ module.exports = {
   useBasicAuth: process.env.ME_CONFIG_BASICAUTH_USERNAME !== '',
 
   basicAuth: {
-    username: process.env.ME_CONFIG_BASICAUTH_USERNAME || 'admin',
-    password: process.env.ME_CONFIG_BASICAUTH_PASSWORD || 'pass',
+    username: process.env.ME_CONFIG_BASICAUTH_USERNAME,
+    password: process.env.ME_CONFIG_BASICAUTH_PASSWORD
   },
 
   options: {

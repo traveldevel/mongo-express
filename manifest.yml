@@ -1,14 +1,14 @@
 ---
 declared-services:
-  mongo_shared:
-    label: mongodb
-    plan: v3.0-dev
+  iot_hub_mongo_shared:
+    label: mlab
+    plan: sandbox
 applications:
 - name: iot-hub-mongo-express-shared
   memory: 128M
   disk_quota: 256M
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack
   services:
-    - mongo_shared
+    - iot_hub_mongo_shared
   env:
     NODE_ENV: cloud-foundry
