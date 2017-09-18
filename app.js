@@ -30,6 +30,8 @@ try
 } 
 catch (e) 
 {
+  console.log(e);
+  
   if (e.code === 'MODULE_NOT_FOUND') {
     console.log('No custom config.js found, loading config.default.js');
   } else {

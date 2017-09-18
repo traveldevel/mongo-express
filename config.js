@@ -1,8 +1,13 @@
 'use strict';
 
-var mongo;
+var mongo = {};
 
 require('dotenv').config();
+
+const cfenv = require('cfenv');
+
+const landscapeName = process.env.LANDSCAPE_NAME;
+const tenantName = process.env.TENANT_NAME;
 
 // Accesing Cloud Foundry variable to get MongoDB info
 if (process.env.VCAP_SERVICES) {
